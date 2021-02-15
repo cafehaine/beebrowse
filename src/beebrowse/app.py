@@ -1,6 +1,7 @@
 """
 A simple hypertext browser
 """
+from requests import Session
 import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
@@ -18,6 +19,7 @@ class BeeBrowse(toga.App):
         self.main_window: toga.MainWindow
         self.tab_box: toga.Box
         self.tab_contents_box: toga.Box
+        self.session = Session()
 
     def _close_tab(self, tab):
         tab_index = self._tabs.index(tab)
@@ -59,7 +61,7 @@ class BeeBrowse(toga.App):
         self.main_window.title = f"{tab_title} − Bee Browse"
 
     def _new_tab(self, url=None, focus=False):
-        self._tabs.insert(self._focused_tab + 1, Tab(url))
+        self._tabs.insert(self._focused_tab + 1, Tab(self.session, url, on_loaded=self._tab_loaded))
         if focus:
             self._focused_tab += 1
         self._update_tab_box()
@@ -78,6 +80,11 @@ class BeeBrowse(toga.App):
 
     def _popup_downloads(self):
         print("TODO popup downloads") # TODO
+
+    def _tab_loaded(self, tab: Tab) -> None:
+        self._update_tab_box()
+        self._update_contents()
+        self._update_title()
 
     def startup(self):
         """
