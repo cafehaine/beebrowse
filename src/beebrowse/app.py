@@ -20,12 +20,24 @@ class BeeBrowse(toga.App):
         self.tab_contents_box: toga.Box
 
     def _close_tab(self, tab):
-        # TODO
-        print("TODO: close tab", tab)
+        tab_index = self._tabs.index(tab)
+        if tab_index <= self._focused_tab:
+            self._focused_tab -= 1
+        self._tabs.pop(tab_index)
+        if not self._tabs:
+            self.main_window.close()
+            return
+        self._update_tab_box()
+        self._update_url_box()
+        self._update_contents()
+        self._update_title()
 
     def _focus_tab(self, tab):
-        # TODO
-        print("TODO: focus tab", tab)
+        self._focused_tab = self._tabs.index(tab)
+        self._update_tab_box()
+        self._update_url_box()
+        self._update_contents()
+        self._update_title()
 
     def _update_tab_box(self):
         self.tab_box.remove(*self.tab_box.children)
@@ -36,14 +48,15 @@ class BeeBrowse(toga.App):
             self.tab_box.add(box)
 
     def _update_url_box(self):
-        pass
+        self.url_input.value = self._tabs[self._focused_tab].url
 
     def _update_contents(self):
         self.tab_contents_box.remove(*self.tab_contents_box.children)
         self.tab_contents_box.add(*self._tabs[self._focused_tab].contents)
 
     def _update_title(self):
-        pass
+        tab_title = self._tabs[self._focused_tab].title
+        self.main_window.title = f"{tab_title} − Bee Browse"
 
     def _new_tab(self, url=None, focus=False):
         self._tabs.insert(self._focused_tab + 1, Tab(url))
@@ -54,6 +67,18 @@ class BeeBrowse(toga.App):
         self._update_contents()
         self._update_title()
 
+    def _history_backward(self):
+        print("TODO history backward")# TODO
+
+    def _history_forward(self):
+        print("TODO history forward")# TODO
+
+    def _navigate_url(self):
+        print("TODO navigate url")# TODO
+
+    def _popup_downloads(self):
+        print("TODO popup downloads") # TODO
+
     def startup(self):
         """
         Construct and show the Toga application.
@@ -62,11 +87,11 @@ class BeeBrowse(toga.App):
         We then create a main window (with a name matching the app), and
         show the main window.
         """
-        self.url_input = toga.TextInput()
-        self.back_button = toga.Button("←")
-        self.forward_button = toga.Button("→")
-        refresh_button = toga.Button("🔁")
-        downloads_button = toga.Button("⇓")
+        self.url_input = toga.TextInput(placeholder="url")
+        self.back_button = toga.Button("←", on_press=lambda _: self._history_backward())
+        self.forward_button = toga.Button("→", on_press=lambda _: self._history_forward())
+        refresh_button = toga.Button("🔁", on_press=lambda _: self._navigate_url())
+        downloads_button = toga.Button("⇓", on_press=lambda _: self._popup_downloads())
         url_box = toga.Box(children=[self.back_button, self.forward_button, self.url_input, refresh_button, downloads_button])
 
         new_tab_button = toga.Button("+", on_press=lambda _: self._new_tab())
@@ -78,10 +103,10 @@ class BeeBrowse(toga.App):
 
         main_box = toga.Box(children=[tab_bar, url_box, self.tab_contents_box], style=Pack(direction=COLUMN))
 
-        self._new_tab(focus=True)
-
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = main_box
+
+        self._new_tab(focus=True)
         self.main_window.show()
 
 
