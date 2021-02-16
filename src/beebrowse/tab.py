@@ -50,10 +50,10 @@ class Tab:
         if tag.name in ("p", "span", "h1", "h2", "h3", "h4", "h5", "h6"):
             # TODO custom styling for titles
             # TODO hande em/i/b/…
-            return toga.Label(tag.text)
+            return toga.Label(tag.get_text(strip=True))
         if tag.name == "a":
             # TODO handle navigation
-            return toga.Button(tag.text)
+            return toga.Button(tag.get_text(strip=True))
         if tag.name == "script":
             return None
         if tag.name == "img":
@@ -72,7 +72,7 @@ class Tab:
             title = head.find("title")
             # TODO favicon, some meta?
             if title is not None:
-                self._title = title.text
+                self._title = title.get_text(strip=True)
 
         output = None
         body = soup.find("body")

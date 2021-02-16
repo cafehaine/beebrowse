@@ -44,7 +44,7 @@ class BeeBrowse(toga.App):
     def _update_tab_box(self):
         self.tab_box.remove(*self.tab_box.children)
         for tab in self._tabs:
-            select_button = toga.Button(str(tab), on_press=lambda _: self._focus_tab(tab))
+            select_button = toga.Button(tab.title, on_press=lambda _: self._focus_tab(tab))
             close_button = toga.Button("x", on_press=lambda _: self._close_tab(tab))
             box = toga.Box(children=[select_button, close_button])
             self.tab_box.add(box)
