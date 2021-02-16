@@ -107,8 +107,9 @@ class BeeBrowse(toga.App):
         tab_bar = toga.Box(children=[tab_scroll, new_tab_button], style=Pack(direction=ROW))
 
         self.tab_contents_box = toga.Box()
+        tab_scroll = toga.ScrollContainer(content=self.tab_contents_box)
 
-        main_box = toga.Box(children=[tab_bar, url_box, self.tab_contents_box], style=Pack(direction=COLUMN))
+        main_box = toga.Box(children=[tab_bar, url_box, tab_scroll], style=Pack(direction=COLUMN))
 
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = main_box

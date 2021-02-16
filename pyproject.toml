@@ -12,7 +12,7 @@ formal_name = "Bee Browse"
 description = "A simple hypertext browser"
 icon = "src/beebrowse/resources/beebrowse"
 sources = ['src/beebrowse']
-requires = ["beautifulsoup4==4.9.3", "requests==2.25.1"]
+requires = ["beautifulsoup4==4.9.3", "requests==2.25.1", "lxml==4.6.2"]
 
 
 [tool.briefcase.app.beebrowse.macOS]
