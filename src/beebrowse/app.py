@@ -95,6 +95,7 @@ class BeeBrowse(toga.App):
         show the main window.
         """
         self.url_input = toga.TextInput(placeholder="url")
+        self.url_input.style.update(flex=1)
         self.back_button = toga.Button("←", on_press=lambda _: self._history_backward())
         self.forward_button = toga.Button("→", on_press=lambda _: self._history_forward())
         refresh_button = toga.Button("🔁", on_press=lambda _: self._navigate_url())
@@ -104,12 +105,15 @@ class BeeBrowse(toga.App):
         new_tab_button = toga.Button("+", on_press=lambda _: self._new_tab())
         self.tab_box = toga.Box(style=Pack(direction=ROW))
         tab_scroll = toga.ScrollContainer(vertical=False, content=self.tab_box)
+        tab_scroll.style.update(flex=1)
         tab_bar = toga.Box(children=[tab_scroll, new_tab_button], style=Pack(direction=ROW))
 
         self.tab_contents_box = toga.Box()
-        tab_scroll = toga.ScrollContainer(content=self.tab_contents_box)
+        contents_scroll = toga.ScrollContainer(content=self.tab_contents_box)
+        contents_scroll.style.update(flex=1)
 
-        main_box = toga.Box(children=[tab_bar, url_box, tab_scroll], style=Pack(direction=COLUMN))
+        main_box = toga.Box(children=[tab_bar, url_box, contents_scroll], style=Pack(direction=COLUMN))
+        main_box.style.update(flex=1)
 
         self.main_window = toga.MainWindow(title=self.formal_name)
         self.main_window.content = main_box
