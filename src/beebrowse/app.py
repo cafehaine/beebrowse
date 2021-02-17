@@ -20,6 +20,10 @@ class BeeBrowse(toga.App):
         self.tab_box: toga.Box
         self.tab_contents_box: toga.Box
         self.session = Session()
+        self.session.headers.update({
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8", # Taken from Firefox Developer Edition on Wed 17 Feb 2021
+            "User-Agent": "BeeBrowse 0.1",
+            })
 
     def _close_tab(self, tab):
         tab_index = self._tabs.index(tab)

@@ -1,12 +1,14 @@
 from queue import Queue
 from threading import Thread
 from typing import List, Optional
+from urllib.parse import urljoin
 
 from bs4 import BeautifulSoup, Tag
 from requests import Session, Response
 import toga
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW
+from toga.images import Image
 
 class WorkerThread(Thread):
     """A worker that fetches pages in the background."""
@@ -30,7 +32,7 @@ class Tab:
     """A tab and it's history."""
     def __init__(self, session: Session, url = None, on_loaded = None):
         if url is None:
-            url = "https://duckduckgo.com/" # config.new_tab
+            url = "https://retro.hackaday.com/index.html" # config.new_tab
         self.url: str = url
         self._title: Optional[str] = None
         self.history = [url]
@@ -47,6 +49,8 @@ class Tab:
         return self._title
 
     def _recursively_build_page(self, tag: Tag) -> Optional[toga.Widget]:
+        if tag.name == "pre":
+            return toga.Label(tag.get_text())
         if tag.name in ("p", "span", "h1", "h2", "h3", "h4", "h5", "h6"):
             # TODO custom styling for titles
             # TODO hande em/i/b/…
@@ -57,11 +61,13 @@ class Tab:
         if tag.name == "script":
             return None
         if tag.name == "img":
-            # TODO use an Image widget
-            return toga.Label(tag.get("alt", "no description"))
+            # TODO load the picture manually, to keep cookies and headers
+            #img = Image(urljoin(self.url, tag['src']))
+            #return toga.ImageView(image=img)
+            return toga.Label(tag.get("alt", "No description."))
         if tag.name == "hr":
             return toga.Divider()
-        if tag.name in ("div", "main", "article", "section", "header", "footer", "body", "noscript"):
+        if tag.name in ("div", "main", "article", "section", "header", "footer", "body", "noscript", "nav", "ul", "li", "dl", "dd", "dt"):
             children = [self._recursively_build_page(child) for child in tag.children]
             return toga.Box(children=[child for child in children if child is not None], style=Pack(direction=COLUMN))
         return toga.Label(str(tag)) # TODO proper support
